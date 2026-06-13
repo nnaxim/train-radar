@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/nnaxim/train-radar/internal/app"
+)
 
 func main() {
-	fmt.Println("hello")
+	application, err := app.New()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	application.Run()
 }
