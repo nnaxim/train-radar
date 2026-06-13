@@ -4,6 +4,7 @@ go 1.26.4
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/go-chi/chi/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.5.1 // indirect
