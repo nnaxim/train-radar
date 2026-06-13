@@ -1,17 +1,26 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/nnaxim/train-radar/internal/config"
 	"github.com/nnaxim/train-radar/internal/database"
+	"github.com/nnaxim/train-radar/internal/handler"
 	"github.com/nnaxim/train-radar/internal/logger"
+	"github.com/nnaxim/train-radar/internal/repository"
+	"github.com/nnaxim/train-radar/internal/server"
+	"github.com/nnaxim/train-radar/internal/service"
 	"github.com/uptrace/bun"
 	"go.uber.org/zap"
 )
 
 type App struct {
-	Config *config.Config
-	Logger *zap.Logger
-	DB     *bun.DB
+	Config            *config.Config
+	Logger            *zap.Logger
+	DB                *bun.DB
+	StationRepository *repository.StationRepository
+	StationService    *service.StationService
+	StationHandler    *handler.StationHandler
 }
 
 func New() (*App, error) {
@@ -33,24 +42,49 @@ func New() (*App, error) {
 		return nil, err
 	}
 
+	stationRepository := repository.NewStationRepository(
+		db,
+	)
+
+	stationService := service.NewStationService(
+		stationRepository,
+	)
+
+	StationHandler := handler.NewStationHandler(
+		stationService,
+	)
+
 	return &App{
-		Config: cfg,
-		Logger: log,
-		DB:     db,
+		Config:            cfg,
+		Logger:            log,
+		DB:                db,
+		StationRepository: stationRepository,
+		StationService:    stationService,
+		StationHandler:    StationHandler,
 	}, nil
 }
 
 func (a *App) Run() {
-	a.Logger.Info(
-		"Application started",
+	srv := server.New()
+
+	a.StationHandler.RegisterRoutes(
+		srv.Router(),
 	)
 
 	a.Logger.Info(
-		"database connected",
-	)
-
-	a.Logger.Info(
-		"server port loaded",
+		"starting http server",
 		zap.String("port", a.Config.ServerPort),
 	)
+
+	err := http.ListenAndServe(
+		":"+a.Config.ServerPort,
+		srv.Handler(),
+	)
+
+	if err != nil {
+		a.Logger.Fatal(
+			"failed to start server",
+			zap.Error(err),
+		)
+	}
 }

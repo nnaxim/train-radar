@@ -17,6 +17,6 @@ type Station struct {
 	Latitude  float64
 	Longitude float64
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 }
