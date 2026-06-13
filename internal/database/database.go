@@ -13,12 +13,13 @@ import (
 
 func New(cfg *config.Config) (*bun.DB, error) {
 	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.DBUser,
 		cfg.DBPassword,
 		cfg.DBHost,
 		cfg.DBPort,
 		cfg.DBName,
+		cfg.DBSSLMode,
 	)
 
 	sqldb := sql.OpenDB(

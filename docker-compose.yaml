@@ -4,15 +4,21 @@ services:
     container_name: train-radar-postgres
 
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: train_radar
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
 
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate
+
+    volumes:
+      - ./migrations:/migrations
 
 volumes:
   postgres_data:
