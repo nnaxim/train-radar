@@ -35,3 +35,9 @@ func (s *StationService) GetByID(
 ) (*model.Station, error) {
 	return s.repository.GetByID(ctx, id)
 }
+
+func (s *StationService) GetAll(
+	ctx context.Context,
+) ([]model.Station, error) {
+	return s.repository.GetAll(ctx)
+}

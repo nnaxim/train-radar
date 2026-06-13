@@ -9,6 +9,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 )
 
 func New(cfg *config.Config) (*bun.DB, error) {
@@ -31,6 +32,12 @@ func New(cfg *config.Config) (*bun.DB, error) {
 	db := bun.NewDB(
 		sqldb,
 		pgdialect.New(),
+	)
+
+	db.AddQueryHook(
+		bundebug.NewQueryHook(
+			bundebug.WithVerbose(true),
+		),
 	)
 
 	if err := db.PingContext(context.Background()); err != nil {

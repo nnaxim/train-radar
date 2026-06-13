@@ -47,3 +47,17 @@ func (r *StationRepository) GetByID(
 
 	return station, nil
 }
+
+func (r *StationRepository) GetAll(
+	ctx context.Context,
+) ([]model.Station, error) {
+	var stations []model.Station
+
+	err := r.db.
+		NewSelect().
+		Model(&stations).
+		Order("id ASC").
+		Scan(ctx)
+
+	return stations, err
+}

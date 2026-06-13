@@ -65,8 +65,10 @@ func New() (*App, error) {
 }
 
 func (a *App) Run() {
-	srv := server.New(
-		a.StationHandler,
+	srv := server.New()
+
+	a.StationHandler.RegisterRoutes(
+		srv.Router(),
 	)
 
 	a.Logger.Info(
@@ -76,7 +78,7 @@ func (a *App) Run() {
 
 	err := http.ListenAndServe(
 		":"+a.Config.ServerPort,
-		srv.Router(),
+		srv.Handler(),
 	)
 
 	if err != nil {

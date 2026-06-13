@@ -4,14 +4,13 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/nnaxim/train-radar/internal/handler"
 )
 
 type Server struct {
 	router *chi.Mux
 }
 
-func New(stationHandler *handler.StationHandler) *Server {
+func New() *Server {
 	router := chi.NewRouter()
 
 	router.Get(
@@ -21,16 +20,15 @@ func New(stationHandler *handler.StationHandler) *Server {
 		},
 	)
 
-	router.Get(
-		"/stations/{id}",
-		stationHandler.GetByID,
-	)
-
 	return &Server{
 		router: router,
 	}
 }
 
-func (s *Server) Router() http.Handler {
+func (s *Server) Router() *chi.Mux {
+	return s.router
+}
+
+func (s *Server) Handler() http.Handler {
 	return s.router
 }
