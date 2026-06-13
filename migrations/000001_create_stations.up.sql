@@ -1,0 +1,9 @@
+CREATE TABLE stations (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    country TEXT NOT NULL,
+    latitude DOUBLE PRECISION NOT NULL,
+    longitude DOUBLE PRECISION NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    upddated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
