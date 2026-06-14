@@ -61,3 +61,16 @@ func (r *StationRepository) GetAll(
 
 	return stations, err
 }
+
+func (r *StationRepository) DeleteByID(
+	ctx context.Context,
+	id uint64,
+) error {
+	_, err := r.db.
+		NewDelete().
+		Model((*model.Station)(nil)).
+		Where("id = ?", id).
+		Exec(ctx)
+
+	return err
+}

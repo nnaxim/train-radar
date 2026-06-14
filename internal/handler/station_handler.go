@@ -146,6 +146,51 @@ func (h *StationHandler) GetAll(
 	json.NewEncoder(w).Encode(stations)
 }
 
+func (h *StationHandler) DeleteByID(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	idParam := chi.URLParam(
+		r,
+		"id",
+	)
+
+	id, err := strconv.ParseUint(
+		idParam,
+		10,
+		64,
+	)
+
+	if err != nil {
+		http.Error(
+			w,
+			"invalid station id",
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	err = h.service.DeleteByID(
+		r.Context(),
+		id,
+	)
+
+	if err != nil {
+		http.Error(
+			w,
+			"failed to delete station",
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	w.WriteHeader(
+		http.StatusNoContent,
+	)
+}
+
 func (h *StationHandler) RegisterRoutes(
 	r chi.Router,
 ) {
@@ -162,6 +207,11 @@ func (h *StationHandler) RegisterRoutes(
 	r.Post(
 		"/stations",
 		h.Create,
+	)
+
+	r.Delete(
+		"/stations/{id}",
+		h.DeleteByID,
 	)
 
 }

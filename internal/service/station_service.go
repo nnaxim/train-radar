@@ -41,3 +41,13 @@ func (s *StationService) GetAll(
 ) ([]model.Station, error) {
 	return s.repository.GetAll(ctx)
 }
+
+func (s *StationService) DeleteByID(
+	ctx context.Context,
+	id uint64,
+) error {
+	return s.repository.DeleteByID(
+		ctx,
+		id,
+	)
+}
