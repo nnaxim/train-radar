@@ -62,6 +62,19 @@ func (r *StationRepository) GetAll(
 	return stations, err
 }
 
+func (r *StationRepository) Update(
+	ctx context.Context,
+	station *model.Station,
+) error {
+	_, err := r.db.
+		NewUpdate().
+		Model(station).
+		WherePK().
+		Exec(ctx)
+
+	return err
+}
+
 func (r *StationRepository) DeleteByID(
 	ctx context.Context,
 	id uint64,

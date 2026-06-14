@@ -146,6 +146,75 @@ func (h *StationHandler) GetAll(
 	json.NewEncoder(w).Encode(stations)
 }
 
+func (h *StationHandler) Update(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	idParam := chi.URLParam(
+		r,
+		"id",
+	)
+
+	id, err := strconv.ParseUint(
+		idParam,
+		10,
+		64,
+	)
+
+	if err != nil {
+		http.Error(
+			w,
+			"invalid station id",
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	var req dto.UpdateStationRequest
+
+	err = json.NewDecoder(
+		r.Body,
+	).Decode(&req)
+
+	if err != nil {
+		http.Error(
+			w,
+			"invalid request body",
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	station := &model.Station{
+		ID:        id,
+		Name:      req.Name,
+		Country:   req.Country,
+		Latitude:  req.Latitude,
+		Longitude: req.Longitude,
+	}
+
+	err = h.service.Update(
+		r.Context(),
+		station,
+	)
+
+	if err != nil {
+		http.Error(
+			w,
+			"failed to update station",
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	json.NewEncoder(w).Encode(
+		station,
+	)
+}
+
 func (h *StationHandler) DeleteByID(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -207,6 +276,11 @@ func (h *StationHandler) RegisterRoutes(
 	r.Post(
 		"/stations",
 		h.Create,
+	)
+
+	r.Put(
+		"/stations/{id}",
+		h.Update,
 	)
 
 	r.Delete(

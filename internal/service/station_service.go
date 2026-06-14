@@ -42,6 +42,16 @@ func (s *StationService) GetAll(
 	return s.repository.GetAll(ctx)
 }
 
+func (s *StationService) Update(
+	ctx context.Context,
+	station *model.Station,
+) error {
+	return s.repository.Update(
+		ctx,
+		station,
+	)
+}
+
 func (s *StationService) DeleteByID(
 	ctx context.Context,
 	id uint64,
